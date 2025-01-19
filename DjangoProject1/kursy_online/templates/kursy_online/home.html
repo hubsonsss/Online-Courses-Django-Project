@@ -1,0 +1,45 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+
+    <div class="home-container">
+
+        <div>
+            <h3>Search Course</h3>
+            <hr>
+
+            <div>
+                <a href="{% url "home" %}">All</a>
+            </div>
+
+            {% for subject in subjects %}
+                <div>
+                    <a href="{% url "home" %}?q={{ subject.name }}">{{ subject.name }}</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <h2>{{ course_sum }} courses are waiting for You!</h2>
+            <a href="{% url "create_course" %}">Create Course</a>
+
+            <div>
+                {% for course in courses %}
+                    <div>{% if request.user == course.teacher %}
+                        <a href="{% url "update_course"  course.id%}">Edit</a>
+                        <a href="{% url "delete_course"  course.id%}">Delete</a>
+                        {% endif %}
+                        <span>@{{ course.teacher.username }}</span>
+                        <h5>{{ course.id }} -- <a href="{% url "course" course.id %}">{{course.name}}</a></h5>
+                        <small>{{ course.subject.name }}</small>
+                        <hr>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
