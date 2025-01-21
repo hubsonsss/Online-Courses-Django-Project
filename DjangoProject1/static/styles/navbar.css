@@ -1,0 +1,29 @@
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar .form-control {
+    max-width: 500px;
+}
+
+.profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile .btn {
+    margin-left: 5px;
+}
+
+.dropdown-menu {
+        text-align: center; /* Center-aligns text in the dropdown */
+    }
+
+    .dropdown-item {
+        display: flex;
+        justify-content: center; /* Horizontally centers content */
+        align-items: center; /* Vertically centers content */
+    }

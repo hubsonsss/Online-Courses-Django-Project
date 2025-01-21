@@ -1,0 +1,12 @@
+<h3>Recent Activity</h3>
+<hr>
+{% for comment in recent_activities %}
+    <div>
+        <div>
+            <a href="{% url 'profile' comment.user.id %}">{{ comment.user }}</a>
+            <h4>{{ comment.created }}</h4>
+        </div>
+        <h4>replied to "{{ comment.course }}"</h4>
+        <h4>{{ comment }}</h4>
+    </div>
+{% endfor %}

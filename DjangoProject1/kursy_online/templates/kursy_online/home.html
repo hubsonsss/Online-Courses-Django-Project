@@ -2,14 +2,15 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/home.css' %}">
+
 
     <div class="home-container">
 
-        <div>
+        <div class="search-box">
             <h3>Search Course</h3>
             <hr>
-
+        
             <div>
                 <a href="{% url "home" %}">All</a>
             </div>
@@ -20,26 +21,30 @@
                 </div>
             {% endfor %}
         </div>
-
-        <div>
+    
+        <div class="container-course">
             <h2>{{ course_sum }} courses are waiting for You!</h2>
             <a href="{% url "create_course" %}">Create Course</a>
 
             <div>
                 {% for course in courses %}
-                    <div>{% if request.user == course.teacher %}
-                        <a href="{% url "update_course"  course.id%}">Edit</a>
-                        <a href="{% url "delete_course"  course.id%}">Delete</a>
-                        {% endif %}
-                        <span>@{{ course.teacher.username }}</span>
-                        <h5>{{ course.id }} -- <a href="{% url "course" course.id %}">{{course.name}}</a></h5>
-                        <small>{{ course.subject.name }}</small>
-                        <hr>
-                    </div>
+                {% include "kursy_online/course_list.html" %}
                 {% endfor %}
             </div>
         </div>
-
+    
+        <div class="activities">
+            {% if request.user.is_authenticated %}
+                <div class="home-activities">
+                    {% include "kursy_online/recent_activities.html" %}
+                </div> 
+            {% else %}
+                <div>
+                    <p>Join our competence platform and develop your skills with us! {{ users_sum }} users have already trusted our community, taking advantage of our wide range of courses and trainings. Log in now to gain new qualifications, develop your career and join a dynamically growing group of professionals. Inspiring materials, interactive lessons and expert support are waiting for you!</p>
+                </div>
+            {% endif %}
+        </div>
+    
     </div>
 
 {% endblock %}

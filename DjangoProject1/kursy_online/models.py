@@ -1,7 +1,18 @@
+import uuid
+
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
+class User(AbstractUser):
 
+    name = models.CharField(max_length=50, null=True, unique=True)
+    email = models.EmailField()
+    bio = models.TextField(null=True, blank=True)
+    image = models.ImageField(null=True, default='avatar.png')
+    is_active = models.BooleanField(default=False)
+    activation_token = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    REQUIRED_FIELDS = ['email', 'name']
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +23,7 @@ class Subject(models.Model):
 
 class Course(models.Model):
     teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    #students
+    students = models.ManyToManyField(User, related_name='students', blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -25,8 +36,6 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
-#class Student(models.Model):
-
 
 
 
@@ -37,6 +46,9 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ["-updated", '-created']
+
     def __str__(self):
-        return self.message[0:30]
+        return self.message[0:40]
 

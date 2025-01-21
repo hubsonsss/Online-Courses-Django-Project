@@ -1,0 +1,11 @@
+
+<div>
+    <a href="{% url 'profile' course.teacher.id %}">{{ course.teacher.username }}</a>
+    {% if request.user == course.teacher %}
+        <a href="{% url "update_course"  course.id%}">Edit</a>
+        <a href="{% url "delete_course"  course.id%}">Delete</a>
+    {% endif %}
+    <h5><a href="{% url "course" course.id %}">{{course.name}}</a>    {{ course.created | timesince}} ago</h5>
+    <small>{{ course.subject.name }}</small>
+    <hr>
+</div>

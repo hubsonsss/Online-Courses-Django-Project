@@ -1,0 +1,5 @@
+.container-course{
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    background-color: #4ac1f7;
+}

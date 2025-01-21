@@ -1,0 +1,82 @@
+{% extends "main.html" %}
+{% load static %}
+{% block content %}
+    
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/profile.css' %}">
+    
+<div class="profile">
+    <div class="profile-header">
+        <div class="profile-info">
+            {% if request.user == user %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <label for="id_name">Name:</label>
+                        {{ form.name }}
+                    </div>
+                    <div>
+                        <label for="id_profile_picture">Profile Picture:</label>
+                        <div class="image-preview-container">
+                            <img id="image-preview" src="{{ user.image.url }}" alt="Current Profile Picture" class="profile-img-preview">
+                        </div>
+                        {{ form.image }}
+                    </div>
+                    <div>
+                        <label for="id_bio">Bio:</label>
+                        {{ form.bio }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            {% else %}
+                <div class="profile-image">
+                    <img src="{{ user.image.url }}" alt="Profile Picture" class="profile-img">
+                </div>
+                <div class="profile-details">
+                    <h1 class="profile-name">{{ user.name }}</h1>
+                    <p class="profile-username">@{{ user.username }}</p>
+                    <p class="profile-bio">{{ user.bio }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="profile-divider">
+
+    <div class="profile-stats">
+            <div class="stat-item">
+                <span class="stat-title">Courses as Participant:</span>
+                <span class="stat-value">{{ join_courses_count }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-title">Courses as Teacher:</span>
+                <span class="stat-value">{{ created_courses_count }}</span>
+            </div>
+    </div>
+
+    {% if request.user == user %}
+        <div>
+            {% include "kursy_online/recent_activities.html" %}
+        </div>
+    {% endif %}
+</div>
+    
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imageInput = document.getElementById("id_image"); // Adjust to match the actual ID of the file input
+        const imagePreview = document.getElementById("image-preview");
+
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}
+

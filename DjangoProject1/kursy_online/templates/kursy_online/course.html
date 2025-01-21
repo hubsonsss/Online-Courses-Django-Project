@@ -1,34 +1,87 @@
 {% extends "main.html" %}
+{% load static %}
 
 {% block content %}
-
-    <div>
-        <h1>{{ course.name }}</h1>
-        <h3> {{ course.teacher }}</h3>
-        <p>{{ course.description }}</p>
-        <small>{{ course.subject }}</small>
-    </div>
-
-    <div class="comments-list">
-        <h3>Messages</h3>
-
-        {% for comment in comments %}
+    <link rel="stylesheet" href="{% static 'styles/course.css' %}">
+    <div class="container-course">
+        <div class="students-course">
+            <h1>Students</h1>
+            <hr>
+            
+            {% for student in students %}
+                <div class="student">
+                    <p>{{ student.username }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    
+    
+        <div class="course-content">
             <div>
-                <h5>{{ comment.user }}   {{ comment.created | timesince}} ago</h5>
-                <p>
-                   {{ comment.message }}
-                </p>
+                <h1>{{ course.name }}</h1>
+                <h3> {{ course.teacher }}</h3>
+                <p>{{ course.description }}</p>
+                <small>{{ course.subject }}</small>
             </div>
-        {% endfor %}
-    </div>
+        
+            <div>
+            {% if user.is_authenticated %}
+                {% if user not in students %}
+                    {% if user != course.teacher %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="join_course" class="btn-join">
+                            Join {{ course.name }}.
+                        </button>
+                    </form>
+                    {% else %}
+                        <p>This is your course.</p>
+                    {% endif %}
+                {% else %}
+                    <p>You are already a participant in this course.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="leave_course" class="btn-leave">
+                            Leave {{ course.name }}.
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <p>You must be logged in to join this course.</p>
+            {% endif %}
+        </div>
+        
 
-    <div class="comment-form">
-        <form method="post" action="">
-            {% csrf_token %}
-            <label for="comment"></label>
-            <textarea id="comment" name="comment" rows="5" cols="40" placeholder="Write your message..."></textarea>
-            <button type="submit">Send</button>
-        </form>
+        {% if user.is_authenticated and user in students or user == course.teacher %}
+            <div class="comments-list">
+                <h3>Messages</h3>
+        
+                {% for comment in comments %}
+                    <div>
+                        {% if request.user == comment.user %}
+                        <a href="{% url "delete_message" comment.id%}">Delete</a>
+                        {% endif %}
+                        <h5>{{ comment.user }}   {{ comment.created | timesince}} ago</h5>
+                        <p>
+                           {{ comment.message }}
+                        </p>
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        
+            <div class="comment-form">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <label for="comment"></label>
+                    <textarea id="comment" name="comment" rows="5" cols="40" placeholder="Write your message..."></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        {% endif %}
+        </div>
+        <div>
+            <h1>Coś tu będzie</h1>
+        </div>
     </div>
-
 {% endblock %}

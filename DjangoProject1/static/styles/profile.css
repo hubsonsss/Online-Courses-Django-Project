@@ -1,0 +1,90 @@
+
+.profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+        padding: 20px;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 800px;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-image {
+        flex-shrink: 0;
+        margin-right: 20px;
+    }
+
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e9ecef;
+    }
+
+    .profile-details {
+        flex: 1;
+    }
+
+    .profile-name {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        color: #333;
+    }
+
+    .profile-username {
+        font-size: 1.2rem;
+        color: #6c757d;
+        margin: 5px 0;
+    }
+
+    .profile-bio {
+        font-size: 1rem;
+        color: #495057;
+        margin: 0;
+    }
+
+    .profile-divider {
+        margin: 20px 0;
+        border: none;
+        height: 1px;
+        background: #e9ecef;
+    }
+
+    .profile-stats {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-title {
+        display: block;
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+    }
