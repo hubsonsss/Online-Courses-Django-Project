@@ -11,6 +11,7 @@
                 {% for course in created_courses %}
                     {% include "kursy_online/course_list.html" %}
                 {% endfor %}
+                <a href="{% url 'download_created_courses_xml' %}" class="btn btn-primary">Download Created Courses (XML)</a>
         {% else %}
             <p>You haven't created any courses yet.</p>
         {% endif %}
@@ -22,6 +23,7 @@
                 {% for course in joined_courses %}
                     {% include "kursy_online/course_list.html" %}
                 {% endfor %}
+                <a href="{% url 'download_joined_courses_xml' %}" class="btn btn-primary">Download Joined Courses (XML)</a>
         {% else %}
             <p>You haven't joined any courses yet.</p>
         {% endif %}

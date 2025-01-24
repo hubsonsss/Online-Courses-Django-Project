@@ -1,7 +1,10 @@
+import os
+
+from lxml import etree
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -9,8 +12,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
 from django.conf import settings
+from django.utils.xmlutils import SimplerXMLGenerator
 from .models import Course, Subject, Message, User
 from .forms import CourseForm, RegistrationForm, UserProfileForm
 from django.db.models import Q
@@ -259,3 +262,51 @@ def yourCourses(request, p):
     context = {"created_courses": created_courses, "joined_courses": joined_courses}
     return render(request, "kursy_online/your_courses.html", context)
 
+
+def generate_courses_xml(courses, xslt_filename, output_filename):
+    # funkcja pomocnicza, aby uniknąć redundancji
+    if not courses.exists():
+        return HttpResponse(f"<h1>No courses found.</h1>", content_type="text/html")
+
+    root = etree.Element("courses")
+    for course in courses:
+        course_element = etree.SubElement(root, "course", id=str(course.id))
+        etree.SubElement(course_element, "name").text = course.name
+        etree.SubElement(course_element, "description").text = course.description or ""
+        etree.SubElement(course_element, "teacher").text = course.teacher.name if course.teacher else "Unknown"
+        etree.SubElement(course_element, "created").text = str(course.created)
+
+    xslt_path = os.path.join("static", "xsl", xslt_filename)
+    try:
+        with open(xslt_path, "r") as xslt_file:
+            xslt_root = etree.XML(xslt_file.read().encode('utf-8'))
+    except FileNotFoundError:
+        return HttpResponse("<h1>XSL file not found.</h1>", content_type="text/html")
+
+    transform = etree.XSLT(xslt_root)
+    result = transform(root)
+
+    response = HttpResponse(
+        str(result),
+        content_type="application/xhtml+xml"
+    )
+    response['Content-Disposition'] = f'attachment; filename="{output_filename}"'
+    return response
+
+@login_required
+def download_joined_courses_xml(request):
+    joined_courses = Course.objects.filter(students=request.user)
+    return generate_courses_xml(
+        joined_courses,
+        xslt_filename = "joined_courses.xsl",
+        output_filename="joined_courses.html"
+    )
+
+@login_required
+def download_created_courses_xml(request):
+    created_courses = Course.objects.filter(teacher=request.user)
+    return generate_courses_xml(
+        created_courses,
+        xslt_filename = "created_courses.xsl",
+        output_filename="created_courses.html"
+    )
