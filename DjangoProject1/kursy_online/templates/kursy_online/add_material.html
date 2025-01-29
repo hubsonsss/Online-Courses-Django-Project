@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'styles/add_material.css' %}">
+  <div class="upload-container">
+    <div class="add-material-title">Upload Course Material for "{{ course.name }}"</div>
+    
+    <form method="post" enctype="multipart/form-data" class="upload-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+            {{ form.title }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.file.id_for_label }}" class="form-label">Material File</label>
+            {{ form.file }}
+        </div>
+        
+        <button type="submit" class="btn-submit">Upload Material</button>
+    </form>
+  </div>
+{% endblock %}

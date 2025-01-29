@@ -1,11 +1,10 @@
 import re
 
-from django.contrib.auth.forms import SetPasswordForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django import forms
 
-from kursy_online.models import Course, User
+from kursy_online.models import Course, User, CourseMaterial
 
 
 class CourseForm(ModelForm):
@@ -117,3 +116,9 @@ class PasswordResetConfirmForm(forms.Form):
             raise forms.ValidationError("The two password fields must match.")
 
         return cleaned_data
+
+
+class CourseMaterialForm(forms.ModelForm):
+    class Meta:
+        model = CourseMaterial
+        fields = ['title', 'file']

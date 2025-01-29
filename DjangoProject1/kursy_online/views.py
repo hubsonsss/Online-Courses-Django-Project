@@ -8,13 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
-from .models import Course, Subject, Message, User
-from .forms import CourseForm, RegistrationForm, UserProfileForm
+from .models import Course, Subject, Message, User, CourseMaterial
+from .forms import CourseForm, RegistrationForm, UserProfileForm, CourseMaterialForm
 from django.db.models import Q
 def home(request):
     if request.GET.get('q') is not None:
@@ -337,3 +337,37 @@ def check_email_exists(request):
     else:
         return JsonResponse({'exists': False})
 
+
+@login_required
+def add_material(request, course_id):
+    course = Course.objects.get(id=course_id)
+
+    if request.user != course.teacher:
+        return redirect('course', p=course.id)
+
+    if request.method == 'POST':
+        form = CourseMaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            material = form.save(commit=False)
+            material.course = course
+            material.save()
+            return redirect('course', p=course.id)
+    else:
+        form = CourseMaterialForm()
+    context = {"form": form, "course": course}
+    return render(request, 'kursy_online/add_material.html', context)
+
+
+@login_required
+def delete_material(request, material_id):
+    material = get_object_or_404(CourseMaterial, id=material_id)
+
+    if request.user != material.course.teacher:
+        return HttpResponseForbidden("You do not have permission to delete this file!")
+
+    if request.method == "POST":
+        course_id = material.course.id
+        material.delete()
+        return redirect('course', p=course_id)
+    context = {"material": material}
+    return render(request, 'kursy_online/delete.html', context)

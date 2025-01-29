@@ -26,4 +26,7 @@ urlpatterns = [
     path('check-username/', views.check_username, name='check_username'),
     path('check-email/', views.check_email_exists, name='check_email_exists'),
     path('delete_account/', views.delete_account, name='delete_account'),
+    path('course/<int:course_id>/add_material/', views.add_material, name='add_material'),
+    path('material/<int:material_id>/delete/', views.delete_material, name='delete_material'),
+
 ]
