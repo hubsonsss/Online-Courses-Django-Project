@@ -2,16 +2,19 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'styles/course.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/course.css' %}?v=1.0">
+    
     <div class="container-course">
         <div class="students-course">
             <h1>Students</h1>
             <hr>
             
             {% for student in students %}
-                <div class="student">
-                    <p>{{ student.username }}</p>
+                <div class="user-info">
+                    <img id="image-preview" src="{{ student.image.url }}" alt="Profile Picture">
+                    <a href="{% url 'profile' student.id %}" class="teacher-link">@{{ student.username }}</a>
                 </div>
+                <hr>
             {% endfor %}
         </div>
     
@@ -48,6 +51,7 @@
                 {% endif %}
             {% else %}
                 <p>You must be logged in to join this course.</p>
+                <a href="{% url 'login' %}">Login</a>
             {% endif %}
         </div>
         
@@ -58,10 +62,13 @@
         
                 {% for comment in comments %}
                     <div>
-                        {% if request.user == comment.user %}
-                        <a href="{% url "delete_message" comment.id%}">Delete</a>
-                        {% endif %}
-                        <h5>{{ comment.user }}   {{ comment.created | timesince}} ago</h5>
+                        <div class="user-info">
+                            <img id="image-preview-2" src="{{ comment.user.image.url }}" alt="Profile Picture"> 
+                            <h5>{{ comment.user }}   {{ comment.created | timesince}} ago</h5>
+                            {% if request.user == comment.user %}
+                                <a href="{% url "delete_message" comment.id%}">Delete</a>
+                            {% endif %}
+                        </div>
                         <p>
                            {{ comment.message }}
                         </p>

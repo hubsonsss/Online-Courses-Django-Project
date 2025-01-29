@@ -1,6 +1,16 @@
 {% extends "main.html" %}
+{% load static %}
 
 {% block content %}
-  <h2>Registration Successful!</h2>
-  <p>Check your email for the activation link. Please click the link to activate your account.</p>
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/registration_success.css' %}">
+  <div class="registration-success-container">
+    <div class="registration-success-card">
+      <h2 class="registration-success-title">Registration Successful!</h2>
+      <p class="registration-success-message">
+        Check your email for the activation link. Please click the link to activate your account.
+      </p>
+        <a href="{% url 'login' %}" class="registration-login-link">Login now</a>
+    </div>
+  </div>
 {% endblock %}

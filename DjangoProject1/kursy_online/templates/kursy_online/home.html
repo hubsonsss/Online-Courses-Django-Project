@@ -2,49 +2,50 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/home.css' %}">
-
-
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/home.css' %}?v=1.1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
     <div class="home-container">
 
         <div class="search-box">
             <h3>Search Course</h3>
             <hr>
-        
+
             <div>
-                <a href="{% url "home" %}">All</a>
+                <a href="{% url 'home' %}" class="search-link">All</a>
             </div>
 
             {% for subject in subjects %}
                 <div>
-                    <a href="{% url "home" %}?q={{ subject.name }}">{{ subject.name }}</a>
+                    <a href="{% url 'home' %}?q={{ subject.name }}" class="search-link">{{ subject.name }}</a>
                 </div>
             {% endfor %}
         </div>
-    
-        <div class="container-course">
-            <h2>{{ course_sum }} courses are waiting for You!</h2>
-            <a href="{% url "create_course" %}">Create Course</a>
 
-            <div>
+        <div class="container-course">
+            <h2>{{ course_sum }} courses are waiting for you!</h2>
+            <a href="{% url 'create_course' %}" class="create-course-btn"><i class="fas fa-chalkboard-teacher"></i> Create Course</a>
+
+            <div class="course-list">
                 {% for course in courses %}
-                {% include "kursy_online/course_list.html" %}
+                    {% include 'kursy_online/course_list.html' %}
                 {% endfor %}
             </div>
         </div>
-    
+
         <div class="activities">
             {% if request.user.is_authenticated %}
                 <div class="home-activities">
-                    {% include "kursy_online/recent_activities.html" %}
-                </div> 
+                    {% include 'kursy_online/recent_activities.html' %}
+                </div>
             {% else %}
                 <div>
-                    <p>Join our competence platform and develop your skills with us! {{ users_sum }} users have already trusted our community, taking advantage of our wide range of courses and trainings. Log in now to gain new qualifications, develop your career and join a dynamically growing group of professionals. Inspiring materials, interactive lessons and expert support are waiting for you!</p>
+                    <p>Join our competence platform and develop your skills with us! {{ users_sum }} users have already trusted our community. Log in to gain new qualifications, develop your career, and join a growing group of professionals. Inspiring materials, interactive lessons, and expert support await you!</p>
                 </div>
             {% endif %}
         </div>
-    
+
     </div>
 
 {% endblock %}
+

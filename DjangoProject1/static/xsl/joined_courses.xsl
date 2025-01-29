@@ -59,7 +59,11 @@
                             <td><xsl:value-of select="name" /></td>
                             <td><xsl:value-of select="description" /></td>
                             <td><xsl:value-of select="teacher" /></td>
-                            <td><xsl:value-of select="created" /></td>
+                            <td>
+                                <xsl:value-of select="substring(created, 1, 10)" />
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="substring(created, 12, 5)" />
+                            </td>
                         </tr>
                     </xsl:for-each>
                 </table>

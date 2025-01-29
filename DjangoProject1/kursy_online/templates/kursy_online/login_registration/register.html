@@ -1,17 +1,161 @@
 {% extends "main.html" %}
+{% load static %}
 
 {% block content %}
 
-
-<div>
-        <form method="POST" action="">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}">
+    
+<div class="registration-page-container">
+    <div class="registration-form-card">
+        <h2 class="registration-title">Create Account</h2>
+        <form id="registrationForm" method="POST" action="" autocomplete="off">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Register">
+            <div class="registration-form-fields">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" id="submitBtn" class="registration-submit-btn" disabled>Register</button>
         </form>
 
-        <p>Already signed up?</p>
-        <a href="{% url "login" %}">Login</a>
+        <p class="registration-already-text">
+            Already have an account? <a href="{% url 'login' %}" class="registration-login-link">Login here</a>.
+        </p>
     </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("registrationForm");
+        const submitBtn = document.getElementById("submitBtn");
+        
+        const nameInput = form.querySelector("#id_name");
+        const usernameInput = form.querySelector("#id_username");
+        const emailInput = form.querySelector("#id_email");
+        const passwordInput = form.querySelector("#id_password");
+        const confirmPasswordInput = form.querySelector("#id_confirm_password");
+
+        const fields = [nameInput, usernameInput, emailInput, passwordInput, confirmPasswordInput];
+
+        const validateField = async (input) => {
+            let isValid = true;
+            const parent = input.parentElement;
+            const existingError = parent.querySelector(".registration-error-message");
+            
+            if (existingError) {
+                existingError.remove();
+            }
+            input.style.borderColor = "";
+            
+            if (input === nameInput) {
+                if (input.value.trim() === "") {
+                    showError(input, "Name is required.");
+                    isValid = false;
+                } else if (!/^[a-zA-Z]+$/.test(input.value)) {
+                    showError(input, "Name must contain only letters.");
+                    isValid = false;
+                }
+            }
+            
+            if (input === usernameInput) {
+                if (input.value.trim() === "") {
+                    showError(input, "Username is required.");
+                    isValid = false;
+                } else {
+                    const isAvailable = await checkUsernameAvailability(input.value);
+                    if (!isAvailable) {
+                        showError(input, "Username is already taken.");
+                        isValid = false;
+                    }
+                }
+            }
+            
+            if (input === emailInput) {
+                if (!validateEmail(input.value)) {
+                    showError(input, "Invalid email address.");
+                    isValid = false;
+                } else {
+                    const isEmailTaken = await checkEmailAvailability(input.value);
+                    if (isEmailTaken) {
+                        showError(input, "This email is already registered.");
+                        isValid = false;
+                    }
+                }
+            }
+            
+            if (input === passwordInput) {
+                if (input.value.length < 8) {
+                    showError(input, "Password must be at least 8 characters long.");
+                    isValid = false;
+                }
+            }
+            
+            if (input === confirmPasswordInput) {
+                if (input.value !== passwordInput.value) {
+                    showError(input, "Passwords do not match.");
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        };
+
+        const validateForm = async () => {
+            let isFormValid = true;
+            for (const field of fields) {
+                const isValid = await validateField(field);
+                if (!isValid) {
+                    isFormValid = false;
+                }
+            }
+            submitBtn.disabled = !isFormValid;
+        };
+
+        const showError = (input, message) => {
+            const error = document.createElement("div");
+            error.className = "registration-error-message";
+            error.textContent = message;
+            input.parentElement.appendChild(error);
+            input.style.borderColor = "red";
+        };
+
+        const validateEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        };
+
+        const checkUsernameAvailability = async (username) => {
+            try {
+                const response = await fetch(`/check-username/?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                return data.available;
+            } catch (error) {
+                console.error("Error checking username availability:", error);
+                return false;
+            }
+        };
+
+        const checkEmailAvailability = async (email) => {
+            try {
+                const response = await fetch(`/check-email/?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+                return data.exists;
+            } catch (error) {
+                console.error("Error checking email availability:", error);
+                return false;
+            }
+        };
+        
+        fields.forEach(field => {
+            field.addEventListener("input", () => validateForm());
+        });
+
+        form.addEventListener("submit", (e) => {
+            validateForm();
+            if (submitBtn.disabled) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+    
 
 {% endblock %}

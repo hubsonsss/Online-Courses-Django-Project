@@ -1,11 +1,20 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/course_list.css' %}?v=1.2">
 
-<div>
-    <a href="{% url 'profile' course.teacher.id %}">{{ course.teacher.username }}</a>
+<div class="course-info">
+    <img id="image-preview" src="{{ course.teacher.image.url }}" alt="Profile Picture">
+    <a href="{% url 'profile' course.teacher.id %}" class="teacher-link">@{{ course.teacher.username }}</a>
+
     {% if request.user == course.teacher %}
-        <a href="{% url "update_course"  course.id%}">Edit</a>
-        <a href="{% url "delete_course"  course.id%}">Delete</a>
+        <a href="{% url 'update_course' course.id %}" class="edit-link">Edit</a>
+        <a href="{% url 'delete_course' course.id %}" class="delete-link">Delete</a>
     {% endif %}
-    <h5><a href="{% url "course" course.id %}">{{course.name}}</a>    {{ course.created | timesince}} ago</h5>
-    <small>{{ course.subject.name }}</small>
+
+    <h5>
+        <a href="{% url 'course' course.id %}" class="course-name">{{ course.name }}</a> 
+        <span class="course-time">{{ course.created | timesince }} ago</span>
+    </h5>
+    
+    <small class="course-subject">{{ course.subject.name }}</small>
     <hr>
 </div>

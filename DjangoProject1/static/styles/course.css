@@ -1,5 +1,188 @@
-.container-course{
+.container-course {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
-    background-color: #4ac1f7;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    gap: 20px;
 }
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.students-course {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.students-course h1 {
+    font-size: 20px;
+    color: #007BFF;
+}
+
+.student {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.course-content {
+    padding: 20px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-content h1 {
+    font-size: 26px;
+    color: #007BFF;
+    margin-bottom: 10px;
+}
+
+.course-content h3 {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.course-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.5;
+}
+
+.course-content small {
+    font-size: 14px;
+    color: #777;
+}
+
+.btn-join,
+.btn-leave {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-leave {
+    background-color: #d9534f;
+}
+
+.btn-join:hover {
+    background-color: #0056b3;
+}
+
+.btn-leave:hover {
+    background-color: #c9302c;
+}
+
+.comments-list {
+    margin-top: 20px;
+    padding: 15px;
+    background: #ffffff;
+}
+
+.comments-list h3 {
+    font-size: 20px;
+    color: #007BFF;
+}
+
+.comments-list div {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.comments-list h5 {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.comments-list p {
+    font-size: 16px;
+    color: #333;
+    margin-top: 5px;
+}
+
+
+.comment-form {
+    margin-top: 20px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: none;
+}
+
+.comment-form button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.comment-form button:hover {
+    background-color: #0056b3;
+}
+
+#image-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000000;
+}
+
+#image-preview-2 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000000;
+}
+
+
+@media (max-width: 768px) {
+    .container-course {
+        padding: 15px;
+    }
+
+    .students-course,
+    .course-content,
+    .comments-list,
+    .comment-form {
+        padding: 10px;
+    }
+}
+
+

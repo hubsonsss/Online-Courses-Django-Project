@@ -23,4 +23,7 @@ urlpatterns = [
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='kursy_online/password_reset/password_reset_complete.html'), name='password_reset_complete'),
     path('download-created-courses-xml/', views.download_created_courses_xml, name='download_created_courses_xml'),
     path('download-joined-courses-xml/', views.download_joined_courses_xml, name='download_joined_courses_xml'),
+    path('check-username/', views.check_username, name='check_username'),
+    path('check-email/', views.check_email_exists, name='check_email_exists'),
+    path('delete_account/', views.delete_account, name='delete_account'),
 ]

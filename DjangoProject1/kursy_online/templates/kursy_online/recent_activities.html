@@ -1,12 +1,16 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/recent_activities.css' %}?v=1.2">
+
 <h3>Recent Activity</h3>
 <hr>
 {% for comment in recent_activities %}
-    <div>
-        <div>
-            <a href="{% url 'profile' comment.user.id %}">{{ comment.user }}</a>
-            <h4>{{ comment.created }}</h4>
+    <div class="activity-card">
+        <div class="activity-header">
+            <img id="image-preview" src="{{ comment.user.image.url }}" alt="Profile Picture">
+            <a href="{% url 'profile' comment.user.id %}" class="activity-user">@{{ comment.user }}</a>
+            <h4 class="activity-time">{{ comment.created|timesince }} ago</h4>
         </div>
-        <h4>replied to "{{ comment.course }}"</h4>
-        <h4>{{ comment }}</h4>
+        <h4 class="activity-reply">replied to "<a href="{% url 'course' comment.course.id %}" class="course-name">{{ comment.course }}</a>"</h4>
+        <p class="activity-comment">{{ comment }}</p>
     </div>
 {% endfor %}

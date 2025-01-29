@@ -3,17 +3,16 @@ import os
 from lxml import etree
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
-from django.utils.xmlutils import SimplerXMLGenerator
 from .models import Course, Subject, Message, User
 from .forms import CourseForm, RegistrationForm, UserProfileForm
 from django.db.models import Q
@@ -80,7 +79,7 @@ def createCourse(request):
             course.save()
             return redirect("home")
     context = {"form": form}
-    return render(request,"kursy_online/course_appearance.html", context)
+    return render(request, "kursy_online/create_course.html", context)
 
 
 @login_required(login_url="login")
@@ -97,7 +96,7 @@ def updateCourse(request, p):
             form.save()
             return redirect("home")
     context = {"form": form}
-    return render(request, "kursy_online/course_appearance.html", context)
+    return render(request, "kursy_online/create_course.html", context)
 
 @login_required(login_url="login")
 def deleteCourse(request, p):
@@ -153,6 +152,11 @@ def registerView(request):
             if User.objects.filter(username=username).exists():
                 messages.error(request, "An account with this username already exists.")
                 return redirect("register")
+
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "An account with this email already exists.")
+                return redirect("register")
+
 
             user = User.objects.create_user(name=name, username=username, email=email, password=password)
 
@@ -221,7 +225,14 @@ def deleteMessage(request, p):
     return render(request, "kursy_online/delete.html", context)
 
 
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()
+        return redirect('home')
 
+    return render(request, 'kursy_online/delete.html')
 
 def viewProfile(request, p):
     user = get_object_or_404(User, id=p)
@@ -276,7 +287,8 @@ def generate_courses_xml(courses, xslt_filename, output_filename):
         etree.SubElement(course_element, "teacher").text = course.teacher.name if course.teacher else "Unknown"
         etree.SubElement(course_element, "created").text = str(course.created)
 
-    xslt_path = os.path.join("static", "xsl", xslt_filename)
+    xslt_path = os.path.join(settings.BASE_DIR, "static", "xsl", xslt_filename)
+
     try:
         with open(xslt_path, "r") as xslt_file:
             xslt_root = etree.XML(xslt_file.read().encode('utf-8'))
@@ -310,3 +322,18 @@ def download_created_courses_xml(request):
         xslt_filename = "created_courses.xsl",
         output_filename="created_courses.html"
     )
+
+def check_username(request):
+    username = request.GET.get('username', None)
+    if username:
+        is_available = not User.objects.filter(username=username).exists()
+        return JsonResponse({'available': is_available})
+    return JsonResponse({'available': False})
+
+def check_email_exists(request):
+    email = request.GET.get('email', '')
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({'exists': True})
+    else:
+        return JsonResponse({'exists': False})
+

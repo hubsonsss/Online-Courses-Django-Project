@@ -1,0 +1,82 @@
+.course-info {
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-info:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.teacher-link {
+    color: #007BFF;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.teacher-link:hover {
+    color: #0056B3;
+}
+
+.edit-link,
+.delete-link {
+    margin-left: 15px;
+    font-size: 1rem;
+    color: #28A745;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.edit-link:hover {
+    color: #218838;
+}
+
+.delete-link {
+    color: #DC3545;
+}
+
+.delete-link:hover {
+    color: #C82333;
+}
+
+.course-name {
+    font-size: 1.4rem;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.course-name:hover {
+    color: #0056B3;
+}
+
+.course-time {
+    font-size: 1.1rem;
+    color: #6C757D;
+}
+
+.course-subject {
+    color: #343A40;
+    font-size: 1rem;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #E9ECEF;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+#image-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000000;
+}

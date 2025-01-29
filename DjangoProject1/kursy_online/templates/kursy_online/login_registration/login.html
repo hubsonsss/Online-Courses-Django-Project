@@ -1,23 +1,33 @@
 {% extends "main.html" %}
+{% load static %}
 
 {% block content %}
-
-    <div>
-        <form method="POST" action="">
-            {% csrf_token %}
-
-            <label> Username:
-                <input type="text" name="username" placeholder="Enter Username" />
-            </label>
-            <label> Password:
-                <input type="password" name="password" placeholder="Enter Password" />
-            </label>
-            <input type="submit" value="login">
-
-        </form>
-        <a href="{% url 'password_reset' %}">Forgot Password?</a>
-        <p>Haven't signed up yet?</p>
-        <a href="{% url "register" %}">Sign up</a>
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/login.css' %}">
+  <div class="login-page-container">
+    <div class="login-form-card">
+      <h2 class="login-title">Login to Your Account</h2>
+      
+      <form method="POST" action="" class="login-form">
+        {% csrf_token %}
+        <div class="login-input-group">
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username" placeholder="Enter Username" autocomplete="off" required />
+        </div>
+        
+        <div class="login-input-group">
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password" placeholder="Enter Password" autocomplete="off" required />
+        </div>
+        
+        <button type="submit" class="login-submit-btn">Login</button>
+      </form>
+      
+      <div class="login-links">
+        <a href="{% url 'password_reset' %}" class="forgot-password-link">Forgot Password?</a>
+        <p class="signup-prompt">Haven't signed up yet?</p>
+        <a href="{% url 'register' %}" class="signup-link">Sign up</a>
+      </div>
     </div>
-
+  </div>
 {% endblock %}
