@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/profile.css' %}?v=1.2">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/profile.css' %}?v=1.4">
 
     <div class="profile-container">
         <div class="profile-card">
@@ -11,7 +11,10 @@
                     <img id="image-preview-1" src="{{ user.image.url }}" alt="Profile Picture">
                 </div>
                 <div class="profile-info">
-                    <h1 class="profile-name">{{ user.name }}</h1>
+                    <div class="profile-name-rating">
+                        <h1 class="profile-name">{{ user.name }}</h1>
+                        <div class="rating">{{ user.teacher_rating_average|default:"No Ratings" }}</div>
+                    </div>
                     <p class="profile-username">@{{ user.username }}</p>
                     <p class="profile-bio">{{ user.bio }}</p>
                 </div>

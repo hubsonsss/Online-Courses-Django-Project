@@ -3,7 +3,7 @@ import os
 from lxml import etree
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,8 +13,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
-from .models import Course, Subject, Message, User, CourseMaterial
-from .forms import CourseForm, RegistrationForm, UserProfileForm, CourseMaterialForm
+
+from django.db.models import Avg
+from .models import Course, Subject, Message, User, CourseMaterial, TeacherRating
+from .forms import CourseForm, RegistrationForm, UserProfileForm, CourseMaterialForm, RatingForm
 from django.db.models import Q
 def home(request):
     if request.GET.get('q') is not None:
@@ -45,29 +47,57 @@ def home(request):
 
 
 def course(request, p):
-    course = Course.objects.get(id=p)
+    course = get_object_or_404(Course, id=p)
     students = course.students.all()
     comments = []
-    if request.user in students or request.user == course.teacher:
-        comments = course.message_set.all().order_by("-created")
-    if request.method == "POST":
-        if "comment" in request.POST and (request.user in students or request.user == course.teacher ):
-            message = Message.objects.create(
-                user=request.user,
-                course=course,
-                message=request.POST.get("comment"),
-            )
-            return redirect("course", p=course.id)
-        elif "join_course" in request.POST and request.user != course.teacher:
-            course.students.add(request.user)
-            return redirect("course", p=course.id)
-        elif "leave_course" in request.POST and request.user != course.teacher:
-            course.students.remove(request.user)
-            return redirect("course", p=course.id)
-    context = {"course": course, "comments": comments, "students": students}
+
+    if request.user.is_authenticated:
+        if request.user in students or request.user == course.teacher:
+            comments = course.message_set.all().order_by("-created")
+
+        if request.method == "POST":
+            if "comment" in request.POST and (request.user in students or request.user == course.teacher):
+                Message.objects.create(
+                    user=request.user,
+                    course=course,
+                    message=request.POST.get("comment"),
+                )
+                return redirect("course", p=course.id)
+
+            elif "join_course" in request.POST and request.user != course.teacher:
+                course.students.add(request.user)
+                return redirect("course", p=course.id)
+
+            elif "leave_course" in request.POST and request.user != course.teacher:
+                course.students.remove(request.user)
+                return redirect("course", p=course.id)
+
+            elif "rate_teacher" in request.POST and request.user in students:
+                if not TeacherRating.objects.filter(course=course, student=request.user).exists():
+                    rating = request.POST.get("rating")
+                    if rating:
+                        TeacherRating.objects.create(
+                            course=course,
+                            student=request.user,
+                            teacher=course.teacher,
+                            rating=int(rating),
+                        )
+                        return redirect("course", p=course.id)
+
+        already_rated = TeacherRating.objects.filter(course=course, student=request.user).exists()
+    else:
+        already_rated = False
+
+    context = {
+        "course": course,
+        "comments": comments,
+        "students": students,
+        "form": RatingForm() if request.user.is_authenticated and request.user in students and not already_rated else None,
+        "already_rated": already_rated,
+        "avg_rating": course.teacher.teacher_rating_average if course.teacher.teacher_rating_average else "No Rating",
+    }
 
     return render(request, 'kursy_online/course.html', context)
-
 @login_required(login_url="login")
 def createCourse(request):
     form = CourseForm()

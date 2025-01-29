@@ -1,75 +1,15 @@
 .course-info {
-    background-color: #FFFFFF;
+    background: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.course-info:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.teacher-link {
-    color: #007BFF;
-    font-weight: bold;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-}
-
-.teacher-link:hover {
-    color: #0056B3;
-}
-
-.edit-link,
-.delete-link {
-    margin-left: 15px;
-    font-size: 1rem;
-    color: #28A745;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.edit-link:hover {
-    color: #218838;
-}
-
-.delete-link {
-    color: #DC3545;
-}
-
-.delete-link:hover {
-    color: #C82333;
-}
-
-.course-name {
-    font-size: 1.4rem;
-    color: #007BFF;
-    text-decoration: none;
-}
-
-.course-name:hover {
-    color: #0056B3;
-}
-
-.course-time {
-    font-size: 1.1rem;
-    color: #6C757D;
-}
-
-.course-subject {
-    color: #343A40;
-    font-size: 1rem;
-    font-style: italic;
-    margin-top: 5px;
-}
-
-hr {
-    border: 0;
-    border-top: 1px solid #E9ECEF;
-    margin-top: 15px;
+.teacher-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     margin-bottom: 10px;
 }
 
@@ -78,5 +18,67 @@ hr {
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #000000;
+}
+
+.teacher-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.teacher-link {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.rating {
+    font-size: 16px;
+    color: #ff9800;
+    background-color: #fff3cd;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.course-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.edit-link,
+.delete-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.edit-link:hover,
+.delete-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.course-name {
+    font-size: 20px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.course-time {
+    font-size: 14px;
+    color: #777;
+}
+
+.course-subject {
+    font-size: 12px;
+    color: #007bff;
+    background-color: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 5px;
 }

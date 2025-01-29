@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Avg
+
 
 class User(AbstractUser):
 
@@ -11,8 +13,17 @@ class User(AbstractUser):
     image = models.ImageField(null=True, default='avatar.png')
     is_active = models.BooleanField(default=False)
     activation_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    teacher_rating_average = models.DecimalField(
+        max_digits=3, decimal_places=2, null=True, blank=True, default=0
+    )
 
     REQUIRED_FIELDS = ['email', 'name']
+
+    def update_teacher_rating(self):
+        ratings = self.teacher_ratings.all()
+        avg_rating = ratings.aggregate(Avg('rating'))['rating__avg'] or 0
+        self.teacher_rating_average = avg_rating
+        self.save()
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -60,3 +71,16 @@ class CourseMaterial(models.Model):
 
     def __str__(self):
         return self.title
+
+class TeacherRating(models.Model):
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="teacher_ratings" , null=True)
+    rating = models.IntegerField()
+
+    class Meta:
+        unique_together = ('course', 'student')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.teacher.update_teacher_rating()

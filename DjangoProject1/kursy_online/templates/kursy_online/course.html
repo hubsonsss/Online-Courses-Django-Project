@@ -20,13 +20,36 @@
     
     
         <div class="course-content">
-            <div>
-                <h1>{{ course.name }}</h1>
-                <h3> {{ course.teacher }}</h3>
-                <p>{{ course.description }}</p>
-                <small>{{ course.subject }}</small>
+            <div class="course-container-1">
+                    <h1>{{ course.name }}</h1>
+                    <div class="teacher-rating-container">
+                        <img id="image-preview" src="{{ course.teacher.image.url }}" alt="Teacher">
+                        <div class="teacher">{{ course.teacher }}</div>
+                        <div class="rating">{{ course.teacher.teacher_rating_average|default:"No Ratings" }}</div>
+                    </div>
+                    <p>{{ course.description }}</p>
+                    <span class="subject">{{ course.subject }}</span>
             </div>
-        
+                <div>
+                    {% if request.user.is_authenticated %}
+                        {% if request.user in course.students.all %}
+                            {% if not already_rated %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <label for="rating">Rate Teacher (1-5 Stars)</label>
+                                    <div class="star-rating">
+                                        <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
+                                        <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                                        <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                                        <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                                        <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                                    </div>
+                                    <button type="submit" name="rate_teacher" class="btn-join">Submit Rating</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
             <div>
             {% if user.is_authenticated %}
                 {% if user not in students %}
@@ -41,7 +64,6 @@
                         <p>This is your course.</p>
                     {% endif %}
                 {% else %}
-                    <p>You are already a participant in this course.</p>
                     <form method="post">
                         {% csrf_token %}
                         <button type="submit" name="leave_course" class="btn-leave">

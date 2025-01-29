@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django import forms
 
-from kursy_online.models import Course, User, CourseMaterial
+from kursy_online.models import Course, User, CourseMaterial, TeacherRating
 
 
 class CourseForm(ModelForm):
@@ -122,3 +122,13 @@ class CourseMaterialForm(forms.ModelForm):
     class Meta:
         model = CourseMaterial
         fields = ['title', 'file']
+
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = TeacherRating
+        fields = ['rating']
+        widgets = {
+            'rating': forms.RadioSelect(
+                choices=[(1, '1 Star'), (2, '2 Stars'), (3, '3 Stars'), (4, '4 Stars'), (5, '5 Stars')]),
+        }

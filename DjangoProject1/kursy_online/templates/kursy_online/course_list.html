@@ -1,13 +1,20 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/course_list.css' %}?v=1.2">
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/course_list.css' %}?v=1.4">
 
 <div class="course-info">
-    <img id="image-preview" src="{{ course.teacher.image.url }}" alt="Profile Picture">
-    <a href="{% url 'profile' course.teacher.id %}" class="teacher-link">@{{ course.teacher.username }}</a>
+    <div class="teacher-info">
+        <img id="image-preview" src="{{ course.teacher.image.url }}" alt="Profile Picture">
+        <div class="teacher-rating">
+            <a href="{% url 'profile' course.teacher.id %}" class="teacher-link">@{{ course.teacher.username }}</a>
+            <div class="rating">{{ course.teacher.teacher_rating_average|default:"No Ratings" }}</div>
+        </div>
+    </div>
 
     {% if request.user == course.teacher %}
-        <a href="{% url 'update_course' course.id %}" class="edit-link">Edit</a>
-        <a href="{% url 'delete_course' course.id %}" class="delete-link">Delete</a>
+        <div class="course-actions">
+            <a href="{% url 'update_course' course.id %}" class="edit-link">Edit</a>
+            <a href="{% url 'delete_course' course.id %}" class="delete-link">Delete</a>
+        </div>
     {% endif %}
 
     <h5>
